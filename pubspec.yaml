@@ -1,7 +1,7 @@
 name: rapyd
-description: Rapyd
+description: Rapyd Flutter SDK for accessing the Payments API
 version: 0.1.0
-homepage:
+homepage: https://github.com/sbis04/rapyd_sdk_flutter
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
