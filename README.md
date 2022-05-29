@@ -10,7 +10,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yml
 dependencies:
-  version: ^0.1.0
+  version: ^0.1.1
 ```
 
 You can install packages from the command line:
