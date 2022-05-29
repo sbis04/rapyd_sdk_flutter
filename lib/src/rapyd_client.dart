@@ -117,8 +117,8 @@ class RapydClient {
     return checkoutDetails;
   }
 
-  Future<PaymentStatus?> retrieveCheckout({required String checkoutId}) async {
-    PaymentStatus? paymentStatus;
+  Future<PaymentStatus> retrieveCheckout({required String checkoutId}) async {
+    late PaymentStatus paymentStatus;
 
     var method = "get";
     var checkoutEndpoint = '/v1/checkout/$checkoutId';
@@ -137,7 +137,7 @@ class RapydClient {
         dev.log('Checkout retrieved successfully!');
         paymentStatus = PaymentStatus.fromJson(jsonDecode(response.body));
       } else {
-        dev.log(response.statusCode.toString());
+        throw ('Failed to retrieve the checkout, status ${response.statusCode}');
       }
     } catch (_) {
       dev.log('Failed to retrieve checkout');
