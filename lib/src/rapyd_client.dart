@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:convert/convert.dart';
 import 'package:http/http.dart' as http;
@@ -103,20 +104,46 @@ class RapydClient {
         body: data,
       );
 
-      // FOR TESTING >>
-      // print(response.body);
-
       if (response.statusCode == 200) {
-        print('SUCCESSFULLY CHECKOUT');
+        dev.log('SUCCESSFULLY CHECKOUT');
         checkoutDetails = Checkout.fromJson(jsonDecode(response.body));
       } else {
-        print(response.statusCode);
+        dev.log(response.statusCode.toString());
       }
     } catch (e) {
-      print('Failed to generate the checkout');
+      dev.log('Failed to generate the checkout');
     }
 
     return checkoutDetails;
+  }
+
+  Future<PaymentStatus?> retrieveCheckout({required String checkoutId}) async {
+    PaymentStatus? paymentStatus;
+
+    var method = "get";
+    var checkoutEndpoint = '/v1/checkout/$checkoutId';
+
+    final checkoutURL = Uri.parse(baseURL + checkoutEndpoint);
+
+    final headers = _generateHeader(
+      method: method,
+      endpoint: checkoutEndpoint,
+    );
+
+    try {
+      var response = await http.get(checkoutURL, headers: headers);
+
+      if (response.statusCode == 200) {
+        dev.log('Checkout retrieved successfully!');
+        paymentStatus = PaymentStatus.fromJson(jsonDecode(response.body));
+      } else {
+        dev.log(response.statusCode.toString());
+      }
+    } catch (_) {
+      dev.log('Failed to retrieve checkout');
+    }
+
+    return paymentStatus;
   }
 
   Future<Customer> createNewCustomer({
@@ -151,17 +178,14 @@ class RapydClient {
         body: data,
       );
 
-      // FOR TESTING >>
-      // print(response.body);
-
       if (response.statusCode == 200) {
-        print('CUSTOMER SUCCESSFULLY CREATED');
+        dev.log('CUSTOMER SUCCESSFULLY CREATED');
         customerDetails = Customer.fromJson(jsonDecode(response.body));
       } else {
         throw ('Failed to create new customer, status ${response.statusCode}');
       }
     } catch (e) {
-      print('Failed to create a customer');
+      dev.log('Failed to create a customer');
     }
 
     return customerDetails;
@@ -210,17 +234,14 @@ class RapydClient {
         body: data,
       );
 
-      // FOR TESTING >>
-      // print(response.body);
-
       if (response.statusCode == 200) {
-        print('PAYMENT METHOD SUCCESSFULLY ADDED');
+        dev.log('PAYMENT METHOD SUCCESSFULLY ADDED');
         cardDetails = CardPayment.fromJson(jsonDecode(response.body));
       } else {
-        print(response.statusCode);
+        dev.log(response.statusCode.toString());
       }
     } catch (e) {
-      print('Failed to create the payment method');
+      dev.log('Failed to create the payment method');
     }
 
     return cardDetails;
@@ -242,14 +263,14 @@ class RapydClient {
   //   try {
   //     var response = await http.get(walletURL, headers: headers);
 
-  //     print(response.body);
+  //     dev.log(response.body);
 
   //     if (response.statusCode == 200) {
-  //       print('Wallet retrieved successfully!');
+  //       dev.log('Wallet retrieved successfully!');
   //       retrievedWallet = Wallet.fromJson(jsonDecode(response.body));
   //     }
   //   } catch (_) {
-  //     print('Failed to retrieve wallet');
+  //     dev.log('Failed to retrieve wallet');
   //   }
 
   //   return retrievedWallet;
@@ -287,14 +308,14 @@ class RapydClient {
   //       body: data,
   //     );
 
-  //     print(response.body);
+  //     dev.log(response.body);
 
   //     if (response.statusCode == 200) {
-  //       print('SUCCESSFULLY TRANSFERED');
+  //       dev.log('SUCCESSFULLY TRANSFERED');
   //       transferDetails = Transfer.fromJson(jsonDecode(response.body));
   //     }
   //   } catch (e) {
-  //     print('Failed to transfer amount');
+  //     dev.log('Failed to transfer amount');
   //   }
 
   //   return transferDetails;
@@ -329,14 +350,14 @@ class RapydClient {
   //       body: data,
   //     );
 
-  //     print(response.body);
+  //     dev.log(response.body);
 
   //     if (response.statusCode == 200) {
-  //       print('TRANSFER STATUS UPDATED: $response');
+  //       dev.log('TRANSFER STATUS UPDATED: $response');
   //       transferDetails = Transfer.fromJson(jsonDecode(response.body));
   //     }
   //   } catch (e) {
-  //     print('Failed to update transfer status');
+  //     dev.log('Failed to update transfer status');
   //   }
 
   //   return transferDetails;
