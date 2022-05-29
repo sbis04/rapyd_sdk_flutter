@@ -140,7 +140,6 @@ class Payment {
     required this.merchantReferenceId,
     required this.customerToken,
     required this.paymentMethod,
-    required this.paymentMethodData,
     required this.expiration,
     required this.captured,
     required this.refunded,
@@ -174,7 +173,7 @@ class Payment {
   final String? merchantReferenceId;
   final dynamic customerToken;
   final dynamic paymentMethod;
-  final PaymentMethodData? paymentMethodData;
+
   final int? expiration;
   final bool? captured;
   final bool? refunded;
@@ -190,7 +189,7 @@ class Payment {
   final dynamic transactionId;
   final int? createdAt;
   final int? updatedAt;
-  final Metadata? metadata;
+  final CheckoutMetadata? metadata;
   final dynamic failureCode;
   final dynamic failureMessage;
   final bool? paid;
@@ -212,8 +211,6 @@ class Payment {
         merchantReferenceId: json["merchant_reference_id"],
         customerToken: json["customer_token"],
         paymentMethod: json["payment_method"],
-        paymentMethodData:
-            PaymentMethodData.fromJson(json["payment_method_data"]),
         expiration: json["expiration"],
         captured: json["captured"],
         refunded: json["refunded"],
@@ -229,7 +226,7 @@ class Payment {
         transactionId: json["transaction_id"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        metadata: Metadata.fromJson(json["metadata"]),
+        metadata: CheckoutMetadata.fromJson(json["metadata"]),
         failureCode: json["failure_code"],
         failureMessage: json["failure_message"],
         paid: json["paid"],
@@ -248,7 +245,6 @@ class Payment {
         "merchant_reference_id": merchantReferenceId,
         "customer_token": customerToken,
         "payment_method": paymentMethod,
-        "payment_method_data": paymentMethodData?.toJson(),
         "expiration": expiration,
         "captured": captured,
         "refunded": refunded,
@@ -272,37 +268,24 @@ class Payment {
       };
 }
 
-class Metadata {
-  Metadata({
+class CheckoutMetadata {
+  CheckoutMetadata({
     required this.merchantDefined,
   });
 
   final bool merchantDefined;
 
-  factory Metadata.fromRawJson(String str) =>
-      Metadata.fromJson(json.decode(str));
+  factory CheckoutMetadata.fromRawJson(String str) =>
+      CheckoutMetadata.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Metadata.fromJson(Map<String, dynamic> json) => Metadata(
+  factory CheckoutMetadata.fromJson(Map<String, dynamic> json) =>
+      CheckoutMetadata(
         merchantDefined: json["merchant_defined"],
       );
 
   Map<String, dynamic> toJson() => {
         "merchant_defined": merchantDefined,
       };
-}
-
-class PaymentMethodData {
-  PaymentMethodData();
-
-  factory PaymentMethodData.fromRawJson(String str) =>
-      PaymentMethodData.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory PaymentMethodData.fromJson(Map<String, dynamic> json) =>
-      PaymentMethodData();
-
-  Map<String, dynamic> toJson() => {};
 }
