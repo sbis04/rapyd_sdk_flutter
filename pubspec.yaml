@@ -1,6 +1,6 @@
 name: rapyd
 description: Rapyd Flutter SDK for accessing the Payments API
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/sbis04/rapyd_sdk_flutter
 
 environment:
