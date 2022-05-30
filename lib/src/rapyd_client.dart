@@ -61,6 +61,7 @@ class RapydClient {
     required String currency,
     required String countryCode,
     required String customerId,
+    String? orderNumber,
     String? completePaymentURL,
     String? errorPaymentURL,
     String? merchantReferenceId,
@@ -86,6 +87,7 @@ class RapydClient {
       "language": languageCode,
       "metadata": {
         "merchant_defined": true,
+        "sales_order": orderNumber,
       },
       "payment_method_types_include": paymentMethods,
       "customer": customerId,
