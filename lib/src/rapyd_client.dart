@@ -119,8 +119,8 @@ class RapydClient {
     return checkoutDetails;
   }
 
-  Future<PaymentStatus> retrieveCheckout({required String checkoutId}) async {
-    late PaymentStatus paymentStatus;
+  Future<PaymentStatus?> retrieveCheckout({required String checkoutId}) async {
+    PaymentStatus? paymentStatus;
 
     var method = "get";
     var checkoutEndpoint = '/v1/checkout/$checkoutId';

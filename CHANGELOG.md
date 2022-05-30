@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Made `PaymentStatus` nullable 
+
 ## 0.1.3
 
 * Add an optional parameter, `orderNumber` to `createCheckout`
