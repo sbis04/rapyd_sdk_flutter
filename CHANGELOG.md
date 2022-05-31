@@ -1,3 +1,7 @@
+## 0.1.5
+
+* Add documentation to the Rapyd Client APIs
+
 ## 0.1.4
 
 * Made `PaymentStatus` nullable 

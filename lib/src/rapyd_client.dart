@@ -9,12 +9,37 @@ import 'package:crypto/crypto.dart';
 import '../consts/consts.dart';
 import '../models/models.dart';
 
+/// {@template RapydClient}
+/// The client for getting access to all the Rapyd APIs.
+///
+/// Provide the Rapyd `access key` and the `secret key` while initializing
+/// the client. For example:
+///
+/// ```dart
+/// final rapydClient = RapydClient('<access_key>', '<secret_key>');
+/// ```
+///
+/// It's recommended to do the initialization globally inside a Flutter app,
+/// so that you can access the `rapydClient` object from any page.
+/// {@endtemplate}
+///
 class RapydClient {
   final String _accessKey;
   final String _secretKey;
 
+  /// {@macro RapydClient}
   RapydClient(this._accessKey, this._secretKey);
 
+  /// Generates the salt required for [signature calculation](https://docs.rapyd.net/build-with-rapyd/reference/message-security#calculation-of-signature).
+  ///
+  /// ### According to Rapyd API specs:
+  ///
+  /// **Salt** is a random string for each request. Length: 8-16 digits,
+  /// letters and special characters.
+  ///
+  /// This method generates a salt of encoded 16 random bytes and returns it as
+  /// a `String`.
+  ///
   String _generateSalt() {
     final random = Random.secure();
     // Generate 16 characters for salt by generating 16 random bytes
@@ -23,6 +48,27 @@ class RapydClient {
     return base64UrlEncode(randomBytes);
   }
 
+  /// Generates the header required for performing any API call to Rapyd.
+  ///
+  /// It takes three parameters:
+  ///
+  /// * [method] The type of HTTP request (get, post, etc - should be in
+  /// lowercase).
+  ///
+  /// * [endpoint] The endpoint path leaving out the base URL.
+  ///
+  /// * [body] (optional) In case of a method call like `post` the body should
+  /// be provided.
+  ///
+  /// Returns the header as `Map<String, String>`.
+  ///
+  /// The most important part in the header is the signature calculation. It
+  /// is calculated in Rapyd using the following formula:
+  ///
+  /// ```
+  /// signature = BASE64 ( HASH ( http_method + url_path + salt + timestamp + access_key + secret_key + body_string ) )
+  /// ```
+  ///
   Map<String, String> _generateHeader({
     required String method,
     required String endpoint,
@@ -56,6 +102,50 @@ class RapydClient {
     return headers;
   }
 
+  /// Used for generating a new checkout object.
+  ///
+  /// The required parameters are [amount], [currency], [countryCode], and
+  /// [customerId]
+  ///
+  /// * [amount] has to be passed as a `String`.
+  ///
+  ///
+  /// * [currency] of the country, has to be passed as a `String`.
+  ///
+  ///
+  /// * [countryCode] from where the payment is being processed,
+  /// has to be passed as a `String`.
+  ///
+  ///
+  /// * [customerId] of the customer, has to be passed as a `String`.
+  ///
+  ///
+  /// The optional parameters are:
+  ///
+  /// * [orderNumber] that you may want to associate with this checkout,
+  /// maybe helpful while generating invoice for the order.
+  ///
+  /// * [completePaymentURL] the URL where you want to redirect the user
+  /// after completion of a successful transaction.
+  ///
+  ///
+  /// * [errorPaymentURL] the URL where you want to redirect the user
+  /// after completion of a failed transaction.
+  ///
+  ///
+  /// * [merchantReferenceId] to be associated with the checkout.
+  ///
+  ///
+  /// * [paymentMethods] that should be accepted, more information
+  /// [here](https://docs.rapyd.net/build-with-rapyd/docs/payment-methods).
+  ///
+  ///
+  /// * [useCardholdersPreferredCurrency] whether to accept the card holder's
+  /// preferred currency. By default, it's set to `true`.
+  ///
+  ///
+  /// * [languageCode] By default, it's set to `en` (English).
+  ///
   Future<Checkout?> createCheckout({
     required String amount,
     required String currency,
@@ -119,6 +209,8 @@ class RapydClient {
     return checkoutDetails;
   }
 
+  /// Used for retrieving a checkout object.
+  ///
   Future<PaymentStatus?> retrieveCheckout({required String checkoutId}) async {
     PaymentStatus? paymentStatus;
 
@@ -148,6 +240,8 @@ class RapydClient {
     return paymentStatus;
   }
 
+  /// Used for creating a new customer on Rapyd.
+  ///
   Future<Customer> createNewCustomer({
     required String email,
     required String name,
@@ -193,6 +287,8 @@ class RapydClient {
     return customerDetails;
   }
 
+  /// Used for adding a new payment method to a customer object.
+  ///
   Future<CardPayment?> addPaymentMethodToCustomer({
     required String customerId,
     required String type,

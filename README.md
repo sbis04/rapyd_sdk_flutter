@@ -10,13 +10,21 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yml
 dependencies:
-  version: ^0.1.1
+  version: ^0.1.5
 ```
 
-You can install packages from the command line:
+You can install packages from the command line.
+
+For Flutter projects:
 
 ```bash
-pub get rapyd
+flutter pub add rapyd
+```
+
+For Dart projects:
+
+```bash
+dart pub add rapyd
 ```
 
 ## Usage
